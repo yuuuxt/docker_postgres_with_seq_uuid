@@ -1,5 +1,5 @@
 # ref: https://github.com/docker-library/postgres/issues/340
-FROM postgres:13 AS extension_builder
+FROM postgres:12 AS extension_builder
 
 # Already download extension code
 RUN cd / && mkdir external_extensions && mkdir /external_extensions/sequential-uuids
@@ -20,8 +20,8 @@ FROM postgres:13
 #if use alpine: the paths are different!
 
 # run find / -name 'sequential_uuids*' to find newly compiled files and copy to next stage
-COPY --from=extension_builder /usr/lib/postgresql/13/lib /usr/lib/postgresql/13/lib
-COPY --from=extension_builder /usr/share/postgresql/13/extension /usr/share/postgresql/13/extension
+COPY --from=extension_builder /usr/lib/postgresql/12/lib /usr/lib/postgresql/12/lib
+COPY --from=extension_builder /usr/share/postgresql/12/extension /usr/share/postgresql/12/extension
 
 # after in sql:
 # CREATE EXTENSION sequential_uuids;
