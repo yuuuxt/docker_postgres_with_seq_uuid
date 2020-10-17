@@ -3,9 +3,7 @@
 FROM postgres:13 AS extension_builder
 
 # Already download extension code
-RUN cd /
-RUN mkdir external_extensions
-RUN mkdir /external_extensions/sequential-uuids
+RUN cd / && mkdir external_extensions && mkdir /external_extensions/sequential-uuids
 COPY lib/sequential-uuids/ /external_extensions/sequential-uuids/
 WORKDIR /external_extensions/sequential-uuids/
 
