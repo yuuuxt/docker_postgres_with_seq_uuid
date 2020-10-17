@@ -16,7 +16,7 @@ WORKDIR /external_extensions/sequential-uuids/
 RUN apt-get update && apt install build-essential libicu-dev postgresql-server-dev-all -y --no-install-recommends
 RUN make clean && make install
 
-FROM postgres:13
+FROM postgres:12
 #if use alpine: the paths are different!
 
 # run find / -name 'sequential_uuids*' to find newly compiled files and copy to next stage
