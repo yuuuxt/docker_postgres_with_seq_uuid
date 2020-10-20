@@ -1,31 +1,27 @@
-FROM postgres:13 AS extension_builder
+ARG postgres_version=13
 
-# Already download extension code
+# extension builder
+FROM postgres:${postgres_version} AS extension_builder
+
 RUN cd / && mkdir external_extensions && mkdir /external_extensions/sequential-uuids
 COPY lib/sequential-uuids/ /external_extensions/sequential-uuids/
 WORKDIR /external_extensions/sequential-uuids/
 
-# additional: change sources.list, but postgres source is still slow. don't need if proxy is used.
-# RUN echo "deb http://mirrors.tuna.tsinghua.edu.cn/debian/ buster main contrib non-free" > /etc/apt/sources.list
-# RUN echo "deb http://mirrors.tuna.tsinghua.edu.cn/debian/ buster-updates main contrib non-free" >> /etc/apt/sources.list
-# RUN echo "deb http://mirrors.tuna.tsinghua.edu.cn/debian/ buster-backports main contrib non-free" >> /etc/apt/sources.list
-# RUN echo "deb http://mirrors.tuna.tsinghua.edu.cn/debian-security buster/updates main contrib non-free" >> /etc/apt/sources.list
-
-
 RUN apt-get update && apt install build-essential libicu-dev postgresql-server-dev-all -y --no-install-recommends
 RUN make clean && make install
 
-FROM postgres:13
+# main image
+FROM postgres:${postgres_version}
+
+ARG pg_version_in_path=13
 
 LABEL maintainer="yuxtonline@outlook.com"
 
 # run find / -name 'sequential_uuids*' to find newly compiled files and copy to next stage
-COPY --from=extension_builder /usr/lib/postgresql/13/lib /usr/lib/postgresql/13/lib
-COPY --from=extension_builder /usr/share/postgresql/13/extension /usr/share/postgresql/13/extension
+COPY --from=extension_builder /usr/lib/postgresql/${pg_version_in_path}/lib /usr/lib/postgresql/${pg_version_in_path}/lib
+COPY --from=extension_builder /usr/share/postgresql/${pg_version_in_path}/extension /usr/share/postgresql/${pg_version_in_path}/extension
 
 # ref: https://github.com/docker-library/postgres/issues/340
 
 # after in sql:
 # CREATE EXTENSION sequential_uuids;
-
-
