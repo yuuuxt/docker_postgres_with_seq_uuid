@@ -1,4 +1,3 @@
-# ref: https://github.com/docker-library/postgres/issues/340
 FROM postgres:13 AS extension_builder
 
 # Already download extension code
@@ -17,11 +16,16 @@ RUN apt-get update && apt install build-essential libicu-dev postgresql-server-d
 RUN make clean && make install
 
 FROM postgres:13
-#if use alpine: the paths are different!
+
+LABEL maintainer="yuxtonline@outlook.com"
 
 # run find / -name 'sequential_uuids*' to find newly compiled files and copy to next stage
 COPY --from=extension_builder /usr/lib/postgresql/13/lib /usr/lib/postgresql/13/lib
 COPY --from=extension_builder /usr/share/postgresql/13/extension /usr/share/postgresql/13/extension
 
+# ref: https://github.com/docker-library/postgres/issues/340
+
 # after in sql:
 # CREATE EXTENSION sequential_uuids;
+
+
