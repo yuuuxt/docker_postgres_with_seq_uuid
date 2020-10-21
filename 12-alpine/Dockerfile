@@ -16,7 +16,7 @@ FROM postgres:${postgres_version}-alpine
 
 LABEL maintainer="yuxtonline@outlook.com"
 
-COPY --from=extension_builder /usr/local/lib/postgresql/bitcode /usr/local/lib/postgresql/bitcode
+COPY --from=extension_builder /usr/local/lib/postgresql/ /usr/local/lib/postgresql/
 COPY --from=extension_builder /usr/local/share/postgresql/extension /usr/local/share/postgresql/extension
 
 # ref: https://github.com/docker-library/postgres/issues/340
