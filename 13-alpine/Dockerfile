@@ -19,7 +19,6 @@ LABEL maintainer="yuxtonline@outlook.com"
 COPY --from=extension_builder /usr/local/lib/postgresql/ /usr/local/lib/postgresql/
 COPY --from=extension_builder /usr/local/share/postgresql/extension /usr/local/share/postgresql/extension
 
-# ref: https://github.com/docker-library/postgres/issues/340
+RUN echo "CREATE EXTENSION IF NOT EXISTS sequential_uuids;" > /docker-entrypoint-initdb.d/create_sequential_uuids.sql
 
-# after in sql:
-# CREATE EXTENSION sequential_uuids;
+# ref: https://github.com/docker-library/postgres/issues/340
