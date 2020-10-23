@@ -2,18 +2,18 @@ ARG postgres_version=12
 
 # extension builder
 FROM postgres:${postgres_version} AS extension_builder
+ARG postgres_version=12
 
 RUN cd / && mkdir external_extensions && mkdir /external_extensions/sequential-uuids
 COPY lib/sequential-uuids/ /external_extensions/sequential-uuids/
 WORKDIR /external_extensions/sequential-uuids/
 
-RUN apt-get update && apt install build-essential libicu-dev postgresql-server-dev-all -y --no-install-recommends
+RUN apt-get update && apt install build-essential libicu-dev postgresql-server-dev-${postgres_version} -y --no-install-recommends
 RUN make clean && make install
 # run find / -name 'sequential_uuids*' to find newly compiled files and copy to next stage
 
 # main image
 FROM postgres:${postgres_version}
-
 ARG pg_version_in_path=12
 
 LABEL maintainer="yuxtonline@outlook.com"
