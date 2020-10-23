@@ -9,7 +9,6 @@ WORKDIR /external_extensions/sequential-uuids/
 
 RUN apk update && apk add build-base icu-dev postgresql-dev
 RUN make clean && make install
-# run find / -name 'sequential_uuids*' to find newly compiled files and copy to next stage
 
 # main image
 FROM postgres:${postgres_version}-alpine
@@ -20,5 +19,3 @@ COPY --from=extension_builder /usr/local/lib/postgresql/ /usr/local/lib/postgres
 COPY --from=extension_builder /usr/local/share/postgresql/extension /usr/local/share/postgresql/extension
 
 RUN echo "CREATE EXTENSION IF NOT EXISTS sequential_uuids;" > /docker-entrypoint-initdb.d/create_sequential_uuids.sql
-
-# ref: https://github.com/docker-library/postgres/issues/340

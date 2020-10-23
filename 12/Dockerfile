@@ -10,7 +10,6 @@ WORKDIR /external_extensions/sequential-uuids/
 
 RUN apt-get update && apt install build-essential libicu-dev postgresql-server-dev-${postgres_version} -y --no-install-recommends
 RUN make clean && make install
-# run find / -name 'sequential_uuids*' to find newly compiled files and copy to next stage
 
 # main image
 FROM postgres:${postgres_version}
@@ -22,5 +21,3 @@ COPY --from=extension_builder /usr/lib/postgresql/${pg_version_in_path}/lib /usr
 COPY --from=extension_builder /usr/share/postgresql/${pg_version_in_path}/extension /usr/share/postgresql/${pg_version_in_path}/extension
 
 RUN echo "CREATE EXTENSION IF NOT EXISTS sequential_uuids;" > /docker-entrypoint-initdb.d/create_sequential_uuids.sql
-
-# ref: https://github.com/docker-library/postgres/issues/340
